@@ -13,7 +13,7 @@ def parse_dockerfile(contents: str) -> List[Dict[str, str]]:
         if stripped.startswith("#"):
             if stripped.lower().startswith("# syntax="):
                 instructions.append({"instruction": "SYNTAX", "value": stripped})
-            continue=
+            continue
         def remove_inline_comment(s: str) -> str:
             in_quote = False
             result = []
@@ -44,22 +44,14 @@ def parse_dockerfile(contents: str) -> List[Dict[str, str]]:
 
 
 def analyse_instructions(instructions: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    """Return size-focused tips for a parsed Dockerfile."""
+
     recs: List[Dict[str, str]] = []
-    base_image = None
-    user_specified = False
     run_lines = []
     for idx, item in enumerate(instructions):
         instr = item["instruction"]
         value = item["value"]
-        if instr == "FROM":
-            base_image = value
-            if ":" not in value or value.strip().endswith(":latest"):
-                recs.append({
-                    "severity": "warning",
-                    "instruction_index": idx,
-                    "message": "Specify a fixed version tag or digest for the base image for reproducibility and security."
-                })
-        elif instr == "RUN":
+        if instr == "RUN":
             run_lines.append((idx, value))
             if "apt-get" in value or "apt " in value:
                 if "--no-install-recommends" not in value:
@@ -87,8 +79,6 @@ def analyse_instructions(instructions: List[Dict[str, str]]) -> List[Dict[str, s
                     "instruction_index": idx,
                     "message": "Use COPY instead of ADD when not extracting archives to improve caching behaviour."
                 })
-        elif instr == "USER":
-            user_specified = True
     if len(run_lines) > 3:
         combined = " && ".join(cmd for _, cmd in run_lines)
         if "apt-get" in combined:
@@ -97,12 +87,6 @@ def analyse_instructions(instructions: List[Dict[str, str]]) -> List[Dict[str, s
                 "instruction_index": -1,
                 "message": "Consider using multi-stage builds to separate build-time dependencies from the final runtime image."
             })
-    if not user_specified:
-        recs.append({
-            "severity": "warning",
-            "instruction_index": -1,
-            "message": "No USER directive found. Running as root can be risky; consider adding a non-root user."
-        })
     return recs
 
 

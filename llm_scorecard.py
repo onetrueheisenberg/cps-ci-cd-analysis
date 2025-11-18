@@ -1,4 +1,4 @@
-"""Run size-focused LLM Dockerfile optimization across repositories and export before/after scores.
+"""Run LLM-driven Dockerfile optimization across repositories and export before/after scores.
 
 This script wires the llm_agents pipeline into a batch runner that:
 - clones repositories from a list
@@ -33,12 +33,30 @@ from llm_agents.dockerfile_validator import DockerfileValidator
 class ScoreRecord:
     repo_url: str
     dockerfile_path: str
-    original_size_score: Optional[float] = None
+    original_overall: Optional[float] = None
+    original_security: Optional[float] = None
+    original_efficiency: Optional[float] = None
+    original_best_practices: Optional[float] = None
+    original_complexity: Optional[float] = None
+    original_maintainability: Optional[float] = None
     original_wasted_kb: Optional[float] = None
-    fixed_size_score: Optional[float] = None
+    fixed_overall: Optional[float] = None
+    fixed_security: Optional[float] = None
+    fixed_efficiency: Optional[float] = None
+    fixed_best_practices: Optional[float] = None
+    fixed_complexity: Optional[float] = None
+    fixed_maintainability: Optional[float] = None
     fixed_wasted_kb: Optional[float] = None
-    size_score_change: Optional[float] = None
-    wasted_space_delta_kb: Optional[float] = None
+    improvement_overall: Optional[float] = None
+    improvement_security: Optional[float] = None
+    improvement_efficiency: Optional[float] = None
+    improvement_best_practices: Optional[float] = None
+    security_risks_before: Optional[int] = None
+    security_risks_after: Optional[int] = None
+    performance_issues_before: Optional[int] = None
+    performance_issues_after: Optional[int] = None
+    missing_practices_before: Optional[int] = None
+    missing_practices_after: Optional[int] = None
     llm_error: Optional[str] = None
     fix_error: Optional[str] = None
     validation_error: Optional[str] = None
@@ -88,13 +106,23 @@ class ScorecardRunner:
         validation = self.validator.validate_fixes(original_analysis, fix_result["fixed_dockerfile"])
         fixed_scores = validation.get("fixed_scores", {})
         improvements = validation.get("improvements", {})
+        issues = validation.get("issues_comparison", {})
+
         record = ScoreRecord(
             repo_url=repo_url,
             dockerfile_path=str(dockerfile_path),
             **self._score_fields(original_analysis.get("scores", {}), prefix="original_"),
             **self._score_fields(fixed_scores, prefix="fixed_"),
-            size_score_change=self._improvement(improvements, "size_score_change"),
-            wasted_space_delta_kb=self._improvement(improvements, "wasted_space_delta_kb"),
+            improvement_overall=self._improvement(improvements, "overall_score"),
+            improvement_security=self._improvement(improvements, "security_score"),
+            improvement_efficiency=self._improvement(improvements, "efficiency_score"),
+            improvement_best_practices=self._improvement(improvements, "best_practices_score"),
+            security_risks_before=self._issue_count(issues, "security_risks", "original_count"),
+            security_risks_after=self._issue_count(issues, "security_risks", "fixed_count"),
+            performance_issues_before=self._issue_count(issues, "performance_issues", "original_count"),
+            performance_issues_after=self._issue_count(issues, "performance_issues", "fixed_count"),
+            missing_practices_before=self._issue_count(issues, "missing_practices", "original_count"),
+            missing_practices_after=self._issue_count(issues, "missing_practices", "fixed_count"),
         )
 
         if not validation.get("success"):
@@ -105,13 +133,24 @@ class ScorecardRunner:
     @staticmethod
     def _score_fields(scores: Dict[str, float], prefix: str) -> Dict[str, Optional[float]]:
         return {
-            f"{prefix}size_score": scores.get("size_score"),
+            f"{prefix}overall": scores.get("overall_score"),
+            f"{prefix}security": scores.get("security_score"),
+            f"{prefix}efficiency": scores.get("efficiency_score"),
+            f"{prefix}best_practices": scores.get("best_practices_score"),
+            f"{prefix}complexity": scores.get("complexity_score"),
+            f"{prefix}maintainability": scores.get("maintainability_score"),
             f"{prefix}wasted_kb": scores.get("estimated_wasted_space_kb"),
         }
 
     @staticmethod
-    def _improvement(improvements: Dict[str, float], key: str) -> Optional[float]:
-        return improvements.get(key)
+    def _improvement(improvements: Dict[str, Dict[str, float]], key: str) -> Optional[float]:
+        if key not in improvements:
+            return None
+        return improvements[key].get("improvement")
+
+    @staticmethod
+    def _issue_count(issues: Dict[str, Dict[str, int]], section: str, field: str) -> Optional[int]:
+        return issues.get(section, {}).get(field)
 
 
 def read_repo_list(repos_file: Path) -> List[str]:

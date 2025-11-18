@@ -1,9 +1,10 @@
-"""Runtime analyzer for Docker images and containers focused solely on size.
+"""Runtime analyzer for Docker images and containers.
 
 This module inspects images that are currently available on the host and
-provides actionable recommendations that focus on image size. The same
-size-related heuristics are applied to running containers to highlight
-disk-heavy writable layers.
+provides actionable recommendations that focus on image size, security, and
+runtime performance. The same heuristics are also applied to running containers
+to surface configuration issues such as missing health checks or security
+hardening gaps.
 
 The script depends on the Docker CLI. When Docker is unavailable or the user
 lacks sufficient permissions, a human-friendly error message is displayed
@@ -24,7 +25,7 @@ from typing import Dict, Iterable, List, Optional
 
 @dataclass
 class Recommendation:
-    """Represents a size-related optimization opportunity."""
+    """Represents an optimization opportunity for an image or container."""
 
     subject: str
     severity: str
@@ -113,7 +114,7 @@ def list_containers(all_containers: bool = False) -> List[Dict[str, object]]:
 
 
 def inspect_container(container_id: str) -> Dict[str, object]:
-    output = _run_docker_command(["inspect", "--size", container_id])
+    output = _run_docker_command(["inspect", container_id])
     try:
         data = json.loads(output)
     except json.JSONDecodeError as exc:  # pragma: no cover - defensive guard
@@ -173,8 +174,46 @@ def analyze_image(image: Dict[str, object]) -> List[Recommendation]:
         )
 
     config = metadata.get("Config", {})
+    user = config.get("User") or "root"
+    if user in ("", "root"):
+        recs.append(
+            Recommendation(
+                subject,
+                "warning",
+                "Container runs as root by default. Define a non-root user for improved security.",
+            )
+        )
+
+    if not config.get("Healthcheck"):
+        recs.append(
+            Recommendation(
+                subject,
+                "suggestion",
+                "No HEALTHCHECK configured. Add one to detect unhealthy containers at runtime.",
+            )
+        )
+
+    exposed_ports = config.get("ExposedPorts") or {}
+    if exposed_ports and not config.get("Labels", {}).get("org.opencontainers.image.source"):
+        recs.append(
+            Recommendation(
+                subject,
+                "info",
+                "Expose ports with clear metadata (labels like org.opencontainers.image.source) to aid SBOM tracking.",
+            )
+        )
+
     env_vars = config.get("Env") or []
     env_dict = {env.split("=", 1)[0]: env.split("=", 1)[1] for env in env_vars if "=" in env}
+    if "PYTHONUNBUFFERED" not in env_dict and any("python" in str(cmd).lower() for cmd in (config.get("Cmd") or [])):
+        recs.append(
+            Recommendation(
+                subject,
+                "suggestion",
+                "Set PYTHONUNBUFFERED=1 to improve logging responsiveness for Python applications.",
+            )
+        )
+
     if env_dict.get("PIP_NO_CACHE_DIR") not in ("1", "true", "True"):
         recs.append(
             Recommendation(
@@ -224,29 +263,81 @@ def analyze_container(container: Dict[str, object]) -> List[Recommendation]:
     except RuntimeError as exc:
         return [Recommendation(subject=subject, severity="error", message=str(exc))]
 
-    size_rw = metadata.get("SizeRw") or 0
-    size_root = metadata.get("SizeRootFs") or 0
-
-    if size_root and size_root > 500 * 1024 * 1024:
+    state = metadata.get("State", {})
+    if not state.get("Running", False):
+        recs.append(
+            Recommendation(subject, "warning", "Container is not running. Review recent exit codes for stability issues."),
+        )
+    elif state.get("Health") and state["Health"].get("Status") != "healthy":
         recs.append(
             Recommendation(
                 subject,
-                "info",
-                ("Container filesystem exceeds 500MB. Remove cached artifacts or temporary files to shrink the image footprint."),
+                "warning",
+                f"Container health status is {state['Health']['Status']}. Investigate failing health checks.",
             )
         )
 
-    if size_rw and size_rw > 200 * 1024 * 1024:
+    config = metadata.get("Config", {})
+    user = config.get("User") or "root"
+    if user in ("", "root"):
+        recs.append(
+            Recommendation(
+                subject,
+                "warning",
+                "Container is running as root. Use a non-root user or user namespace remapping for better security.",
+            )
+        )
+
+    host_config = metadata.get("HostConfig", {})
+    restart_policy = (host_config.get("RestartPolicy") or {}).get("Name") or ""
+    if restart_policy in ("", "no"):
         recs.append(
             Recommendation(
                 subject,
                 "suggestion",
-                "Writable layer is growing (over 200MB). Rotate logs and clean transient data to keep size low.",
+                "No restart policy configured. Consider using --restart unless-stopped for resilient workloads.",
+            )
+        )
+
+    if host_config.get("Privileged"):
+        recs.append(
+            Recommendation(
+                subject,
+                "warning",
+                "Container is running in privileged mode. Drop to least privileges whenever possible.",
+            )
+        )
+
+    if not host_config.get("Memory"):
+        recs.append(
+            Recommendation(
+                subject,
+                "info",
+                "No memory limit set. Configure --memory to avoid node contention and improve stability.",
+            )
+        )
+
+    if host_config.get("LogConfig", {}).get("Type") in ("", "json-file"):
+        recs.append(
+            Recommendation(
+                subject,
+                "suggestion",
+                "Default logging driver json-file can grow unbounded. Configure max-size/max-file or switch to centralized logging.",
+            )
+        )
+
+    network_settings = metadata.get("NetworkSettings", {})
+    if network_settings.get("Ports") and any(details is None for details in network_settings["Ports"].values()):
+        recs.append(
+            Recommendation(
+                subject,
+                "info",
+                "Container exposes ports without host bindings. Ensure proper network policies are enforced.",
             )
         )
 
     if not recs:
-        recs.append(Recommendation(subject, "ok", "No size concerns detected for this container."))
+        recs.append(Recommendation(subject, "ok", "No runtime issues detected for this container."))
     return recs
 
 
@@ -299,17 +390,17 @@ def watch_mode(args: argparse.Namespace) -> None:
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Analyze Docker images and containers for size optimization opportunities.",
+        description="Analyze Docker images and containers for optimization opportunities.",
     )
     parser.add_argument(
         "--images",
         action="store_true",
-        help="Analyze local Docker images for size-related issues.",
+        help="Analyze local Docker images for size, security, and performance issues.",
     )
     parser.add_argument(
         "--containers",
         action="store_true",
-        help="Analyze Docker containers (default: running only) for size growth.",
+        help="Analyze Docker containers (default: running only).",
     )
     parser.add_argument(
         "--all-containers",

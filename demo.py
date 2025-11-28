@@ -15,7 +15,8 @@ def print_banner():
     print()
 
 def check_api_key():
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    # api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    api_key='AIzaSyAjjpS9apfIUPyz3Wv6PS3rSSq_ylQG-TI'
     if not api_key:
         print("❌ ERROR: No Gemini API key found!")
         print("Please set the GEMINI_API_KEY environment variable.")

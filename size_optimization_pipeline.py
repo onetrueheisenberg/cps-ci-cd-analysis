@@ -158,7 +158,12 @@ def apply_llm_size_optimization(dockerfile_content: str, api_key: Optional[str] 
         perf_issues = llm_data.get("performance_issues", [])
         opt_opps = llm_data.get("optimization_opportunities", [])
         
-        size_issues = [issue for issue in (perf_issues + opt_opps) if any(kw in issue.lower() for kw in SIZE_KEYWORDS)]
+        # size_issues = [issue for issue in (perf_issues + opt_opps) if any(kw in issue.lower() for kw in SIZE_KEYWORDS)]
+              # Filter for size-related issues (strings)
+        size_issues_strings = [issue for issue in (perf_issues + opt_opps) if any(kw in str(issue).lower() for kw in SIZE_KEYWORDS)]
+        
+        # Convert strings to dict format for estimate_size_savings
+        size_issues = [{"message": issue} for issue in size_issues_strings]
         
         if not size_issues:
             print("  No size-related issues found by LLM")

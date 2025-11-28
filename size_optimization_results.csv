@@ -1,0 +1,246 @@
+repo_url,dockerfile_path,original_dockerfile,static_optimized_dockerfile,llm_optimized_dockerfile,static_size_issues_found,static_estimated_savings_kb,llm_size_issues_found,llm_estimated_savings_kb,total_estimated_savings_kb,error
+https://github.com/ApolloAuto/apollo,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/COVESA/vsomeip,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/Call-for-Code/DroneAid,cloned_repos/DroneAid/droneaid-ce/Dockerfile,"# pull the official base image  
+FROM node:13.12.0-alpine
+
+FROM nginxinc/nginx-unprivileged
+COPY src...",No,No,0,0.0,0,0.0,0.0,
+https://github.com/DAVFoundation/missions,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/Daniel-xsy/RoboBEV,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/DroneDB/DroneDB,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/Fields2Cover/Fields2Cover,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/Fraunhofer-AISEC/gallia,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/INTO-CPS-Association/DTaaS,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/InfiniTimeOrg/InfiniTime,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/JOP-Lee/READ,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/Kin-Zhang/mmfn,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/LibreELEC/LibreELEC.tv,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/Luos-io/luos_engine,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/MTASZTAKI/ApertusVR,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/NVIDIA-AI-IOT/redtail,cloned_repos/redtail/tools/platforms/erle/erle-sim/Dockerfile.indigo,"FROM ubuntu:14.04
+
+# Build with:
+# docker build -t erle-sim:indigo -f Dockerfile.indigo .
+
+ENV HOME ...",Yes,No,7,330000.0,0,0.0,330000.0,
+https://github.com/OpenDriveLab/UniAD,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/OpenDroneMap/NodeODM,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/OpenDroneMap/ODM,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/OpenDroneMap/WebODM,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/PJLab-ADG/DriveArena,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/PJLab-ADG/SensorsCalibration,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/PaddlePaddle/Paddle-Lite,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/SIAT-INVS/CarlaFLCAV,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/alexa/alexa-auto-sdk,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/amov-lab/Prometheus,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/amymcgovern/pyparrot,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/apache/nuttx,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/appleboy/drone-ssh,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/aurora-opensource/xviz,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/autonomousvision/transfuser,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/autorope/donkeycar,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/autowarefoundation/autoware,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/autowarefoundation/autoware_core_universe_prototype,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/awslabs/autonomous-driving-data-framework,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/bark-simulator/bark,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/bblanchon/ArduinoJson,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/bytecodealliance/wasm-micro-runtime,cloned_repos/wasm-micro-runtime/core/iwasm/libraries/wasi-nn/test/Dockerfile.cpu,"# Copyright (C) 2019 Intel Corporation.  All rights reserved.
+# SPDX-License-Identifier: Apache-2.0 ...",Yes,No,1,210000.0,0,0.0,210000.0,
+https://github.com/carla-simulator/carla,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/carla-simulator/leaderboard,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/christoph2/pyxcp,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/clydemcqueen/tello_ros,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/commaai/openpilot,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/drone-plugins/drone-docker,cloned_repos/drone-docker/docker/gar/Dockerfile.windows.amd64.1809,"# escape=`
+FROM plugins/docker:windows-1809-amd64
+
+LABEL maintainer=""Drone.IO Community <drone-dev@g...",No,No,0,0.0,0,0.0,0.0,
+https://github.com/drone-runners/drone-runner-docker,cloned_repos/drone-runner-docker/docker/Dockerfile.linux.amd64,"FROM alpine:3 as alpine
+RUN apk add -U --no-cache ca-certificates
+
+RUN wget https://github.com/tmate...",No,No,0,0.0,0,0.0,0.0,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 14.019974741s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 14
+}
+]"
+https://github.com/drone-runners/drone-runner-kube,cloned_repos/drone-runner-kube/docker/Dockerfile.linux.amd64,"FROM alpine:3.13 as alpine
+RUN apk add -U --no-cache ca-certificates
+
+FROM alpine:3.13
+EXPOSE 3000
+
+...",No,No,0,0.0,0,0.0,0.0,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 13.830100067s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 13
+}
+]"
+https://github.com/drone/charts,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/drone/docs,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/drone/drone-wall,cloned_repos/drone-wall/Dockerfile,"FROM fnichol/uhttpd
+EXPOSE 80
+ADD build /www
+",No,No,0,0.0,0,0.0,0.0,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 13.617917533s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 13
+}
+]"
+https://github.com/erdos-project/erdos,cloned_repos/erdos/Dockerfile,"FROM ubuntu:20.04
+
+# Set up an erdos user first.
+RUN apt-get -y update && apt-get -y install sudo
+EN...",No,No,0,0.0,0,0.0,0.0,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 13.391875829s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 13
+}
+]"
+https://github.com/erdos-project/pylot,cloned_repos/pylot/docker/Dockerfile,"FROM nvidia/cudagl:11.4.2-devel-ubuntu20.04
+MAINTAINER Sukrit Kalra (sukrit.kalra@berkeley.edu)
+
+# S...",Yes,No,7,1050000.0,0,0.0,0.0,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 13.158695833s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 13
+}
+]"
+https://github.com/generalized-intelligence/GAAS,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/georghess/neurad-studio,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/gtarobotics/self-driving-car,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/harness/drone-cli,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/hatem-darweesh/assuremappingtools,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/huawei-noah/SMARTS,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/ipedrazas/drone-helm,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/lgsvl/simulator,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/libornovax/master_thesis_code,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/mavlink/qgroundcontrol,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/meltwater/drone-cache,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/microsoft/AirSim,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/microsoft/AirSim-NeurIPS2019-Drone-Racing,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/microsoft/devicescript,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/motional/nuplan-devkit,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/mspnp/aks-fabrikam-dronedelivery,,,No,No,0,0.0,0,0.0,0.0,Failed to clone repository
+https://github.com/nanopb/nanopb,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/naurril/SUSTechPOINTS,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/nerves-project/nerves,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/nicholasaleks/Damn-Vulnerable-Drone,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/noshluk2/ROS2-Self-Driving-Car-AI-using-OpenCV,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/open-mmlab/OpenPCDet,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/openthread/openthread,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/orig74/DroneSimLab,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/paparazzi/paparazzi,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/pylessard/python-can-isotp,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/pylessard/python-udsoncan,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/ruhyadi/YOLO3D,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/rusefi/rusefi,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/sigmaai/self-driving-golf-cart,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/storypku/CyberRT/tree/master,,,No,No,0,0.0,0,0.0,0.0,Failed to clone repository
+https://github.com/tier4/AutowareArchitectureProposal.proj,cloned_repos/AutowareArchitectureProposal.proj/docker/pre-built/Dockerfile,"FROM autoware:base
+SHELL [""/bin/bash"", ""-o"", ""pipefail"", ""-c""]
+
+## Copy autoware.proj.repos to the w...",No,No,0,0.0,0,0.0,0.0,
+https://github.com/tier4/CalibrationTools,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/truevisionai/designer,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/trust-ai/SafeBench,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/tusen-ai/SST,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/u-root/u-root,cloned_repos/u-root/tools/golang_patched_dce/Dockerfile,"FROM golang:1.13.5-alpine
+
+ADD ad1d54f.diff /
+
+RUN cd $(go env GOROOT) && patch -p 1 < /ad1d54f.diff...",No,No,0,0.0,0,0.0,0.0,
+https://github.com/uTensor/uTensor,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/ucd-dare/CarDreamer,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/ucla-mobility/OpenCDA,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/vectorgrp/sil-kit,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/verivital/nnv,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/w111liang222/lidar-slam-detection,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/wangguojun2018/CenterNet3d,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'
+https://github.com/waymo-research/waymo-open-dataset,,,No,No,0,0.0,0,0.0,0.0,'str' object has no attribute 'get'

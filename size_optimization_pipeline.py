@@ -25,6 +25,7 @@ from typing import Dict, List, Optional
 from dockerfile_optimizer import analyse_instructions, parse_dockerfile, find_dockerfiles
 from llm_agents.dockerfile_llm_analyzer import DockerfileAnalyzer
 from llm_agents.dockerfile_fixer import DockerfileFixer
+from llm_agents.dockerfile_tester import DockerfileTester
 
 
 SIZE_KEYWORDS = (
@@ -47,6 +48,10 @@ class SizeOptimizationResult:
     llm_size_issues_found: int = 0
     llm_estimated_savings_kb: float = 0.0
     total_estimated_savings_kb: float = 0.0
+    original_image_size: Optional[str] = None
+    optimized_image_size: Optional[str] = None
+    original_build_success: bool = False
+    optimized_build_success: bool = False
     error: Optional[str] = None
 
 
@@ -223,7 +228,14 @@ def clone_repo(url: str, base_dir: str) -> str:
     return dest
 
 
-def process_repository(repo_url: str, repos_dir: str, output_dir: str, api_key: Optional[str], model: Optional[str]) -> List[SizeOptimizationResult]:
+def process_repository(
+    repo_url: str,
+    repos_dir: str,
+    output_dir: str,
+    api_key: Optional[str],
+    model: Optional[str],
+    build_images: bool = False,
+) -> List[SizeOptimizationResult]:
     """Process a single repository through the size optimization pipeline."""
     print(f"\n{'='*70}")
     print(f"Processing: {repo_url}")
@@ -252,6 +264,13 @@ def process_repository(repo_url: str, repos_dir: str, output_dir: str, api_key: 
     
     results = []
     
+    tester: Optional[DockerfileTester] = None
+    if build_images:
+        tester = DockerfileTester()
+        if not tester.docker_available:
+            print("  Docker CLI not available – skipping image builds")
+            tester = None
+
     for dockerfile_path in dockerfiles[:1]:
         print(f"\nProcessing Dockerfile: {dockerfile_path}")
         
@@ -332,6 +351,37 @@ def process_repository(repo_url: str, repos_dir: str, output_dir: str, api_key: 
             error_msg = llm_result.get("error", "Unknown error")
             print(f"  LLM optimization failed: {error_msg}")
             result.error = error_msg
+
+        # Optional: build original and optimized images and compare sizes
+        if tester is not None:
+            try:
+                image_base = repo_name.replace("/", "_")
+                original_tag = f"{image_base}:original"
+
+                print("\n  Building original image for size comparison")
+                build_res = tester._build_image(dockerfile_path, repo_path, original_tag)
+                result.original_build_success = build_res.get("success", False)
+                result.original_image_size = build_res.get("final_size")
+
+                optimized_path: Optional[str] = None
+                if result.llm_optimized_dockerfile:
+                    optimized_path = os.path.join(output_dir, f"{base_name}_llm_optimized")
+                elif result.static_optimized_dockerfile:
+                    optimized_path = os.path.join(output_dir, f"{base_name}_static_optimized")
+
+                if optimized_path and os.path.exists(optimized_path):
+                    optimized_tag = f"{image_base}:optimized"
+                    print("\n  Building optimized image for size comparison")
+                    opt_build_res = tester._build_image(optimized_path, repo_path, optimized_tag)
+                    result.optimized_build_success = opt_build_res.get("success", False)
+                    result.optimized_image_size = opt_build_res.get("final_size")
+
+                if result.original_image_size or result.optimized_image_size:
+                    print("\n  Image size comparison:")
+                    print(f"    Original image size : {result.original_image_size or 'N/A'}")
+                    print(f"    Optimized image size: {result.optimized_image_size or 'N/A'}")
+            except Exception as e:
+                print(f"  Skipping image build due to error: {e}")
         
         results.append(result)
     
@@ -347,6 +397,16 @@ def main():
     parser.add_argument("--api-key", help="Gemini API key")
     parser.add_argument("--model", help="Gemini model name")
     parser.add_argument("--limit", type=int, help="Limit number of repos to process")
+    parser.add_argument(
+        "--index",
+        type=int,
+        help="1-based index of repository in repos-file to process (build a single repo/image)",
+    )
+    parser.add_argument(
+        "--build-images",
+        action="store_true",
+        help="Build Docker images for original and optimized Dockerfiles and compare sizes",
+    )
     args = parser.parse_args()
     
     os.makedirs(args.output_dir, exist_ok=True)
@@ -357,8 +417,15 @@ def main():
         print("ERROR: No Gemini API key found. Set GEMINI_API_KEY or use --api-key")
         return 1
     
-    with open(args.repos_file, 'r') as f:
+    with open(args.repos_file, 'r', encoding='utf-8') as f:
         repo_urls = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+    
+    if args.index is not None:
+        if args.index < 1 or args.index > len(repo_urls):
+            print(f"ERROR: --index must be between 1 and {len(repo_urls)}, got {args.index}")
+            return 1
+        # Select a single repository by its 1-based index
+        repo_urls = [repo_urls[args.index - 1]]
     
     if args.limit:
         repo_urls = repo_urls[:args.limit]
@@ -372,7 +439,14 @@ def main():
     for i, repo_url in enumerate(repo_urls, 1):
         print(f"\n[{i}/{len(repo_urls)}] {repo_url}")
         try:
-            results = process_repository(repo_url, args.repos_dir, args.output_dir, api_key, args.model)
+            results = process_repository(
+                repo_url,
+                args.repos_dir,
+                args.output_dir,
+                api_key,
+                args.model,
+                build_images=args.build_images,
+            )
             all_results.extend(results)
         except Exception as e:
             print(f"ERROR processing {repo_url}: {e}")

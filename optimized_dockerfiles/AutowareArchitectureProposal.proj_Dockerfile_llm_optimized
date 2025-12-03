@@ -9,10 +9,9 @@ WORKDIR /autoware
 # hadolint ignore=DL3003,SC1091
 RUN --mount=type=ssh \
   mkdir src \
-  && vcs import src < autoware.proj.repos
-
-RUN source /opt/ros/galactic/setup.bash \
-  && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+  && vcs import src < autoware.proj.repos \
+  && source /opt/ros/galactic/setup.bash \
+  && colcon build --install-base /autoware/install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 ## Change permission for runtime data conversion
 RUN find /autoware/install -type d -exec chmod 777 {} \;

@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
+
+ENV PATH="/opt/emsdk/upstream/emscripten:${PATH}"
+
+USER root
+RUN cd /opt && \
+    git clone https://github.com/emscripten-core/emsdk.git
+RUN cd /opt/emsdk && \
+    ./emsdk install latest
+RUN cd /opt/emsdk && \
+    ./emsdk activate latest

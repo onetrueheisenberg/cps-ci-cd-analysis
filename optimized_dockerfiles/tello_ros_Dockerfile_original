@@ -1,26 +1,17 @@
-# To build:
-# docker build --pull --no-cache --tag tello_ros:foxy .
-
-# To run:
-# docker run -it tello_ros:foxy bash
-
-# I'm using this for smoke tests
-# To run tello_ros in a docker container you will need to set up ports, x-windows, etc.
-
 FROM osrf/ros:foxy-desktop
 
-RUN apt-get update
-RUN apt-get upgrade -y
-
-RUN apt-get install -y libasio-dev
-RUN apt-get install -y python3-pip
-RUN yes | pip3 install 'transformations==2018.9.5'
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y \
+    libasio-dev \
+    python3-pip && \
+    yes | pip3 install 'transformations==2018.9.5' && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /work/tello_ros_ws/src
 
-RUN git clone https://github.com/clydemcqueen/tello_ros.git
-RUN git clone https://github.com/ptrmu/ros2_shared.git
-RUN git clone https://github.com/ptrmu/fiducial_vlam.git
+RUN git clone https://github.com/clydemcqueen/tello_ros.git && \
+    git clone https://github.com/ptrmu/ros2_shared.git && \
+    git clone https://github.com/ptrmu/fiducial_vlam.git
 
 WORKDIR /work/tello_ros_ws
 

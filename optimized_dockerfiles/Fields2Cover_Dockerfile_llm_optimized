@@ -20,26 +20,21 @@ RUN apt-get update --allow-insecure-repositories -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN if gdalinfo --version | grep -o " 3\.[0-2]\."; then \
-      apt-get update --allow-insecure-repositories -y && \
-      apt-get install -y --no-install-recommends wget && \
+      apt-get install --no-install-recommends wget && \
       wget https://github.com/Kitware/CMake/releases/download/v3.17.2/cmake-3.17.2-Linux-x86_64.sh \
-      -q -O /tmp/cmake-install.sh && \
-      chmod u+x /tmp/cmake-install.sh && \
-      mkdir /usr/bin/cmake && \
-      /tmp/cmake-install.sh --skip-license --prefix=/usr/bin/cmake && \
-      rm /tmp/cmake-install.sh && \
-      rm -rf /var/lib/apt/lists/*; \
+      -q -O /tmp/cmake-install.sh \
+      && chmod u+x /tmp/cmake-install.sh \
+      && mkdir /usr/bin/cmake \
+      && /tmp/cmake-install.sh --skip-license --prefix=/usr/bin/cmake \
+      && rm /tmp/cmake-install.sh; \
     else \
-      apt-get update --allow-insecure-repositories -y && \
-      apt install -y  --allow-unauthenticated --no-install-recommends cmake && \
-      rm -rf /var/lib/apt/lists/*; \
+      apt install -y  --allow-unauthenticated --no-install-recommends cmake ; \ 
     fi
 
 ENV PATH="/usr/bin/cmake/bin:${PATH}"
 
 
-RUN apt-get update --allow-insecure-repositories -y && \
-    apt-get install -y --allow-unauthenticated --no-install-recommends \
+RUN apt-get install -y --allow-unauthenticated --no-install-recommends \
                     build-essential \
                     ca-certificates \
                     doxygen \
@@ -61,49 +56,39 @@ RUN apt-get update --allow-insecure-repositories -y && \
                     ranger \
                     vim \
                     libtinyxml2-dev \
-                    nlohmann-json3-dev && \
-                    rm -rf /var/lib/apt/lists/*
+                    nlohmann-json3-dev
 
 RUN python3 -m pip install --no-cache-dir gcovr setuptools
 RUN python3 -c "import matplotlib" && \
     echo "backend: Agg" > ~/.config/matplotlib/matplotlibrc
 
-RUN apt-get update --allow-insecure-repositories -y && \
-    apt-get install --no-install-recommends -y libgtest-dev && \
-    cd /usr/src/gtest && \
-    cmake CMakeLists.txt && \
-    make && \
-    (cp *.a /usr/lib/ 2>/dev/null || :) && \
-    (cp lib/*.a /usr/lib/ 2>/dev/null || :) && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get install --no-install-recommends -y libgtest-dev \
+    && cd /usr/src/gtest \
+    && cmake CMakeLists.txt \
+    && make \
+    && (cp *.a /usr/lib/ 2>\dev\null || :) \
+    && (cp lib/*.a /usr/lib/ 2>\dev\null || :)
 
 RUN if gdalinfo --version | grep -o " 3\.[0-2]\."; then \
-      apt-get update --allow-insecure-repositories -y && \
-      apt-get install -y --no-install-recommends  --allow-unauthenticated autoconf automake autotools-dev libpcre2-dev bison && \
-      git clone https://github.com/swig/swig.git && \
-      cd swig && \
-      ./autogen.sh && \
-      ./configure && \
-      make -j8 && \
-      make install && \
-      rm -rf /var/lib/apt/lists/*; \
+      apt-get install -y --no-install-recommends  --allow-unauthenticated autoconf automake autotools-dev libpcre2-dev bison \
+      && git clone https://github.com/swig/swig.git \
+      && cd swig \
+      && ./autogen.sh \
+      && ./configure \
+      && make -j8 \
+      && make install; \
     else \
-      apt-get update --allow-insecure-repositories -y && \
-      apt-get install -y --no-install-recommends  --allow-unauthenticated swig && \
-      rm -rf /var/lib/apt/lists/*; \
+      apt-get install -y --no-install-recommends  --allow-unauthenticated swig; \
     fi
 
-RUN apt-get update --allow-insecure-repositories -y && \
-    wget https://github.com/google/or-tools/releases/download/v9.9/or-tools_amd64_ubuntu-22.04_cpp_v9.9.3963.tar.gz -q -O /tmp/ortools.tar.gz && \
-    mkdir -p /tmp/ortools && \
-    tar -zxf /tmp/ortools.tar.gz -C /tmp/ortools --strip-components=1 && \
-    cp -r /tmp/ortools/bin/. /usr/bin && \
-    cp -r /tmp/ortools/include/. /usr/include && \
-    cp -r /tmp/ortools/lib/. /usr/lib && \
-    cp -r /tmp/ortools/lib/cmake/. /usr/share && \
-    cp -r /tmp/ortools/share/. /usr/share/ortools && \
-    rm -rf /tmp/ortools* && \
-    rm -rf /var/lib/apt/lists/*
+RUN wget https://github.com/google/or-tools/releases/download/v9.9/or-tools_amd64_ubuntu-22.04_cpp_v9.9.3963.tar.gz -q -O /tmp/ortools.tar.gz \
+    && mkdir -p /tmp/ortools \
+    && tar -zxf /tmp/ortools.tar.gz -C /tmp/ortools --strip-components=1 \
+    && cp -r /tmp/ortools/bin/. /usr/bin \
+    && cp -r /tmp/ortools/include/. /usr/include \
+    && cp -r /tmp/ortools/lib/. /usr/lib \
+    && cp -r /tmp/ortools/lib/cmake/. /usr/share \
+    && cp -r /tmp/ortools/share/. /usr/share/ortools
 
 COPY . /workspace/fields2cover
 RUN rm -rf /workspace/fields2cover/build && mkdir /workspace/fields2cover/build

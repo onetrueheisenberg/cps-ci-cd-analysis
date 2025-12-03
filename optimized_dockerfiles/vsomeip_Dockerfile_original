@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 SHELL ["/bin/bash", "-xec"]
+RUN apt-get update
 RUN export DEBIAN_FRONTEND=noninteractive;\
-    apt-get update;\
     apt-get dist-upgrade --no-install-recommends --purge --yes\
         clang-12\
         cmake\

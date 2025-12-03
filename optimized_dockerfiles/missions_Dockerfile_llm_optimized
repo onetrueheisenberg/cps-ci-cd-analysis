@@ -1,0 +1,8 @@
+FROM node:9
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm i -g webpack webpack-cli
+CMD npm run start-stg
+EXPOSE 3333

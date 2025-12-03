@@ -1,14 +1,21 @@
 ARG PYTORCH="1.6.0"
 ARG CUDA="10.1"
 ARG CUDNN="7"
-
 FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn${CUDNN}-devel
 
 ENV TORCH_CUDA_ARCH_LIST="6.0 6.1 7.0+PTX"
 ENV TORCH_NVCC_FLAGS="-Xfatbin -compress-all"
 ENV CMAKE_PREFIX_PATH="$(dirname $(which conda))/../"
 
-RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 \
+# Fix NVIDIA GPG key issue - use || true to continue if files don't exist
+RUN apt-get update && apt-get install -y wget ca-certificates \
+    && (rm /etc/apt/sources.list.d/cuda.list || true) \
+    && (rm /etc/apt/sources.list.d/nvidia-ml.list || true) \
+    && apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub \
+    && apt-get update
+
+# Install system dependencies
+RUN apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,6 +31,6 @@ ENV FORCE_CUDA="1"
 RUN pip install -r requirements/build.txt
 RUN pip install --no-cache-dir -e .
 
-# uninstall pycocotools installed by nuscenes-devkit and reinstall mmpycocotools
-RUN pip uninstall pycocotools --no-cache-dir -y
+# uninstall pycocotools and reinstall mmpycocotools
+RUN pip uninstall pycocotools -y
 RUN pip install mmpycocotools --no-cache-dir --force --no-deps

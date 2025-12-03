@@ -1,59 +1,59 @@
-repo_url,dockerfile_path,original_dockerfile,static_optimized_dockerfile,llm_optimized_dockerfile,static_size_issues_found,static_estimated_savings_kb,llm_size_issues_found,llm_estimated_savings_kb,total_estimated_savings_kb,error
-https://github.com/ApolloAuto/apollo,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+repo_url,dockerfile_path,original_dockerfile,static_optimized_dockerfile,llm_optimized_dockerfile,static_size_issues_found,static_estimated_savings_kb,llm_size_issues_found,llm_estimated_savings_kb,total_estimated_savings_kb,original_image_size,optimized_image_size,original_build_success,optimized_build_success,error
+https://github.com/ApolloAuto/apollo,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
 https://github.com/COVESA/vsomeip,cloned_repos/vsomeip/Dockerfile,"FROM ubuntu:22.04
 SHELL [""/bin/bash"", ""-xec""]
-RUN export DEBIAN_FRONTEND=noninteractive;\
-    apt-ge...",No,Yes,0,0.0,2,110000.0,110000.0,
-https://github.com/Call-for-Code/DroneAid,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/DAVFoundation/missions,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/Daniel-xsy/RoboBEV,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+RUN apt-get update
+RUN export DEBIAN_FRONTEND=noninter...",No,Yes,0,0.0,2,20000.0,20000.0,,,False,False,
+https://github.com/Call-for-Code/DroneAid,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/DAVFoundation/missions,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/Daniel-xsy/RoboBEV,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/DroneDB/DroneDB,cloned_repos/DroneDB/docker/Dockerfile,"FROM dronedb/builder
 
 # Set environment variables
 ENV CMAKE_BUILD_TYPE=Release \
-    DEBIAN_FRONTEND...",Yes,Yes,4,210000.0,5,160000.0,370000.0,
+    DEBIAN_FRONTEND...",Yes,Yes,4,210000.0,3,30000.0,240000.0,,,False,False,
 https://github.com/Fields2Cover/Fields2Cover,cloned_repos/Fields2Cover/Dockerfile,"FROM osgeo/gdal:ubuntu-full-3.6.3
 
 LABEL NAME=""fields2cover"" \
       VERSION=""2.0.0"" \
-      DESC=""F...",Yes,Yes,4,290000.0,3,70000.0,360000.0,
+      DESC=""F...",Yes,Yes,4,290000.0,2,20000.0,310000.0,,,False,False,
 https://github.com/Fraunhofer-AISEC/gallia,cloned_repos/gallia/Dockerfile,"# SPDX-FileCopyrightText: AISEC Pentesting Team
 #
 # SPDX-License-Identifier: CC0-1.0
 
-FROM debian:st...",Yes,Yes,2,100000.0,1,10000.0,110000.0,
+FROM debian:st...",Yes,Yes,2,100000.0,2,10000.0,110000.0,,,False,False,
 https://github.com/INTO-CPS-Association/DTaaS,cloned_repos/DTaaS/.devcontainer/dtaas/Dockerfile,"FROM mcr.microsoft.com/devcontainers/typescript-node:22-bullseye
 
 # Accept build arguments
-ARG NODE_...",No,Yes,0,0.0,6,160000.0,160000.0,
+ARG NODE_...",No,Yes,0,0.0,3,50000.0,50000.0,,,False,False,
 https://github.com/InfiniTimeOrg/InfiniTime,cloned_repos/InfiniTime/docker/Dockerfile,"FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG NODE_MAJOR=20
 RUN apt-get update -qq \
-   ...",Yes,Yes,6,400000.0,5,80000.0,480000.0,
-https://github.com/JOP-Lee/READ,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+   ...",Yes,Yes,6,400000.0,5,90000.0,490000.0,,,False,False,
+https://github.com/JOP-Lee/READ,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/Kin-Zhang/mmfn,cloned_repos/mmfn/Dockerfile,"FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu18.04
 # 如果是3090以下 建议用10.2； 3090只能11.3
-# FROM nvidia/cuda:...",Yes,Yes,1,200000.0,4,50000.0,250000.0,
-https://github.com/LibreELEC/LibreELEC.tv,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+# FROM nvidia/cuda:...",Yes,Yes,1,200000.0,4,40000.0,240000.0,,,False,False,
+https://github.com/LibreELEC/LibreELEC.tv,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/Luos-io/luos_engine,cloned_repos/luos_engine/examples/projects/native/gate_wscom/.docker/Dockerfile,"FROM python:3 as builder
 
 LABEL maintainer=""Benjamin Christau <benjamin.christau@luos.io>"" \
-  app_n...",Yes,Yes,1,30000.0,3,110000.0,140000.0,
+  app_n...",Yes,Yes,1,30000.0,1,10000.0,40000.0,,,False,False,
 https://github.com/MTASZTAKI/ApertusVR,cloned_repos/ApertusVR/core/sceneManager/network/3rdParty/rapidjson/docker/debian/Dockerfile,"# BUILD:  docker build -t rapidjson-debian .
-# RUN:    docker run -it -v ""$PWD""/../..:/rapidjson rap...",Yes,Yes,2,60000.0,1,10000.0,70000.0,
+# RUN:    docker run -it -v ""$PWD""/../..:/rapidjson rap...",Yes,Yes,2,60000.0,1,10000.0,70000.0,,,False,False,
 https://github.com/NVIDIA-AI-IOT/redtail,cloned_repos/redtail/tools/platforms/erle/erle-sim/Dockerfile.indigo,"FROM ubuntu:14.04
 
 # Build with:
 # docker build -t erle-sim:indigo -f Dockerfile.indigo .
 
-ENV HOME ...",Yes,No,7,330000.0,0,0.0,330000.0,
+ENV HOME ...",Yes,No,7,330000.0,0,0.0,330000.0,,,False,False,
 https://github.com/OpenDriveLab/UniAD,cloned_repos/UniAD/docker/Dockerfile,"FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04
 
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/...",Yes,Yes,11,610000.0,4,50000.0,660000.0,
+ENV TZ=Europe/...",Yes,Yes,11,610000.0,5,90000.0,700000.0,,,False,False,
 https://github.com/OpenDroneMap/NodeODM,cloned_repos/NodeODM/Dockerfile.gpu,"FROM opendronemap/odm:gpu
 MAINTAINER Piero Toffanin <pt@masseranolabs.com>
 
@@ -61,175 +61,192 @@ EXPOSE 3000
 
 USER root
 
-...",No,Yes,0,0.0,3,60000.0,60000.0,
+...",No,Yes,0,0.0,1,20000.0,20000.0,,,False,False,
 https://github.com/OpenDroneMap/ODM,cloned_repos/ODM/Dockerfile,"FROM ubuntu:24.04 AS builder
 
 # Env variables
 ENV DEBIAN_FRONTEND=noninteractive \
-    PYTHONPATH=""$...",No,Yes,0,0.0,1,0.0,0.0,
-https://github.com/OpenDroneMap/WebODM,cloned_repos/WebODM/Dockerfile,"# syntax=docker/dockerfile:1
-FROM ubuntu:22.04 AS common
-LABEL maintainer=""Piero Toffanin <pt@masser...",No,Yes,0,0.0,4,60000.0,60000.0,
+    PYTHONPATH=""$...",No,Yes,0,0.0,2,0.0,0.0,,,False,False,
+https://github.com/OpenDroneMap/WebODM,cloned_repos/WebODM/Dockerfile,"FROM ubuntu:22.04 AS common
+LABEL maintainer=""Piero Toffanin <pt@masseranolabs.com>""
+
+# Build-time v...",No,No,0,0.0,0,0.0,0.0,,,False,False,
 https://github.com/PJLab-ADG/DriveArena,cloned_repos/DriveArena/WorldDreamer/third_party/diffusers/docker/diffusers-pytorch-cuda/Dockerfile,"FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04
 LABEL maintainer=""Hugging Face""
-LABEL repository=...",No,Yes,0,0.0,3,30000.0,30000.0,
-https://github.com/PJLab-ADG/SensorsCalibration,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
-https://github.com/PaddlePaddle/Paddle-Lite,cloned_repos/Paddle-Lite/lite/tools/Dockerfile.gcc82-cuda10.1-cudnn7,"# A image for paddle lite mobile cross compile and simulator on android
-FROM nvidia/cuda:10.1-cudnn7...",Yes,Yes,1,500000.0,9,1690000.0,2190000.0,
-https://github.com/SIAT-INVS/CarlaFLCAV,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/alexa/alexa-auto-sdk,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/amov-lab/Prometheus,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/amymcgovern/pyparrot,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+LABEL repository=...",No,Yes,0,0.0,3,30000.0,30000.0,,,False,False,
+https://github.com/PJLab-ADG/SensorsCalibration,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
+https://github.com/PaddlePaddle/Paddle-Lite,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/SIAT-INVS/CarlaFLCAV,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/alexa/alexa-auto-sdk,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/amov-lab/Prometheus,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/amymcgovern/pyparrot,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
 https://github.com/apache/nuttx,cloned_repos/nuttx/tools/ci/docker/linux/Dockerfile,"# SPDX-License-Identifier: Apache-2.0
 #
-# Licensed to the Apache Software Foundation (ASF) under one...",Yes,No,11,980000.0,0,0.0,980000.0,
-https://github.com/appleboy/drone-ssh,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/aurora-opensource/xviz,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/autonomousvision/transfuser,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/autorope/donkeycar,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/autowarefoundation/autoware,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+# Licensed to the Apache Software Foundation (ASF) under one...",Yes,Yes,11,980000.0,4,170000.0,1150000.0,,,False,False,
+https://github.com/appleboy/drone-ssh,cloned_repos/drone-ssh/docker/Dockerfile,"FROM alpine:3.21
+
+ARG TARGETOS
+ARG TARGETARCH
+
+LABEL maintainer=""Bo-Yi Wu <appleboy.tw@gmail.com>"" \...",No,Yes,0,0.0,3,50000.0,50000.0,,,False,False,
+https://github.com/aurora-opensource/xviz,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/autonomousvision/transfuser,cloned_repos/transfuser/scenario_runner/Dockerfile,"from ubuntu:18.04
+
+# Install base libs
+run apt-get update && apt-get install --no-install-recommends...",No,Yes,0,0.0,2,30000.0,30000.0,,,False,False,
+https://github.com/autorope/donkeycar,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/autowarefoundation/autoware,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/autowarefoundation/autoware_core_universe_prototype,cloned_repos/autoware_core_universe_prototype/docker/autoware-universe/Dockerfile,"ARG BASE_IMAGE
 # hadolint ignore=DL3006
 FROM $BASE_IMAGE as devel
-SHELL [""/bin/bash"", ""-o"", ""pipefai...",No,No,0,0.0,0,0.0,0.0,
+SHELL [""/bin/bash"", ""-o"", ""pipefai...",No,Yes,0,0.0,3,40000.0,40000.0,,,False,False,
 https://github.com/awslabs/autonomous-driving-data-framework,cloned_repos/autonomous-driving-data-framework/modules/visualization/dcv-image/src/Dockerfile,"FROM public.ecr.aws/ubuntu/ubuntu:20.04
 USER root
 
 ARG DCV_SM_NAME
 ENV DISPLAY=:0 
-ARG DEBIAN_FRONTE...",Yes,Yes,9,780000.0,3,120000.0,900000.0,
-https://github.com/bark-simulator/bark,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/bblanchon/ArduinoJson,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/bytecodealliance/wasm-micro-runtime,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/carla-simulator/carla,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+ARG DEBIAN_FRONTE...",Yes,Yes,9,780000.0,3,30000.0,810000.0,,,False,False,
+https://github.com/bark-simulator/bark,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/bblanchon/ArduinoJson,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/bytecodealliance/wasm-micro-runtime,cloned_repos/wasm-micro-runtime/core/iwasm/libraries/wasi-nn/test/Dockerfile.cpu,"# Copyright (C) 2019 Intel Corporation.  All rights reserved.
+# SPDX-License-Identifier: Apache-2.0 ...",Yes,Yes,1,210000.0,8,170000.0,380000.0,,,False,False,
+https://github.com/carla-simulator/carla,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
 https://github.com/carla-simulator/leaderboard,cloned_repos/leaderboard/scripts/Dockerfile.ros,"ARG ROS_DISTRO
 
 FROM ros:$ROS_DISTRO-ros-base
 
 WORKDIR /workspace
 
-ENV DEBIAN_FRONTEND ""noninteracti...",Yes,Yes,4,350000.0,4,90000.0,440000.0,
+ENV DEBIAN_FRONTEND ""noninteracti...",Yes,Yes,4,350000.0,3,40000.0,390000.0,,,False,False,
 https://github.com/christoph2/pyxcp,cloned_repos/pyxcp/container/basic/Dockerfile,"FROM ubuntu:24.04
 
 RUN apt update
 RUN apt upgrade -y
 RUN apt install -y pkg-config
-RUN apt install -...",No,Yes,0,0.0,4,70000.0,70000.0,
-https://github.com/clydemcqueen/tello_ros,cloned_repos/tello_ros/Dockerfile,"# To build:
-# docker build --pull --no-cache --tag tello_ros:foxy .
+RUN apt install -...",No,Yes,0,0.0,3,50000.0,50000.0,,,False,False,
+https://github.com/clydemcqueen/tello_ros,cloned_repos/tello_ros/Dockerfile,"FROM osrf/ros:foxy-desktop
 
-# To run:
-# docker run -it tell...",Yes,Yes,2,540000.0,9,240000.0,780000.0,
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install --no-i...",No,No,0,0.0,0,0.0,0.0,,,False,False,Failed to generate optimized Dockerfile or no changes made
 https://github.com/commaai/openpilot,cloned_repos/openpilot/Dockerfile.openpilot,"FROM ghcr.io/commaai/openpilot-base:latest
 
 ENV PYTHONUNBUFFERED=1
 
-ENV OPENPILOT_PATH=/home/batman/...",No,No,0,0.0,0,0.0,0.0,
-https://github.com/drone-plugins/drone-docker,cloned_repos/drone-docker/docker/gar/Dockerfile.windows.amd64.1809,"# escape=`
-FROM plugins/docker:windows-1809-amd64
-
-LABEL maintainer=""Drone.IO Community <drone-dev@g...",No,No,0,0.0,0,0.0,0.0,
-https://github.com/drone-runners/drone-runner-docker,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+ENV OPENPILOT_PATH=/home/batman/...",No,Yes,0,0.0,1,0.0,0.0,,,False,False,
+https://github.com/drone-plugins/drone-docker,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/drone-runners/drone-runner-docker,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/drone-runners/drone-runner-kube,cloned_repos/drone-runner-kube/docker/Dockerfile.linux.amd64,"FROM alpine:3.13 as alpine
 RUN apk add -U --no-cache ca-certificates
 
 FROM alpine:3.13
 EXPOSE 3000
 
-...",No,Yes,0,0.0,2,20000.0,20000.0,
-https://github.com/drone/charts,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
-https://github.com/drone/docs,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
-https://github.com/drone/drone-wall,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+...",No,Yes,0,0.0,2,110000.0,110000.0,,,False,False,
+https://github.com/drone/charts,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
+https://github.com/drone/docs,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
+https://github.com/drone/drone-wall,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/erdos-project/erdos,cloned_repos/erdos/Dockerfile,"FROM ubuntu:20.04
 
 # Set up an erdos user first.
 RUN apt-get -y update && apt-get -y install sudo
-EN...",No,Yes,0,0.0,3,130000.0,130000.0,
+EN...",No,Yes,0,0.0,3,50000.0,50000.0,,,False,False,
 https://github.com/erdos-project/pylot,cloned_repos/pylot/docker/Dockerfile,"FROM nvidia/cudagl:11.4.2-devel-ubuntu20.04
 MAINTAINER Sukrit Kalra (sukrit.kalra@berkeley.edu)
 
-# S...",Yes,Yes,7,1050000.0,3,40000.0,1090000.0,
-https://github.com/generalized-intelligence/GAAS,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+# S...",Yes,Yes,7,1050000.0,3,120000.0,1170000.0,,,False,False,
+https://github.com/generalized-intelligence/GAAS,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/georghess/neurad-studio,cloned_repos/neurad-studio/Dockerfile,"ARG CUDA_VERSION=11.8.0
 ARG OS_VERSION=22.04
 # Define base image.
-FROM nvidia/cuda:${CUDA_VERSION}-d...",Yes,Yes,2,300000.0,3,120000.0,420000.0,
-https://github.com/gtarobotics/self-driving-car,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+FROM nvidia/cuda:${CUDA_VERSION}-d...",Yes,No,2,300000.0,0,0.0,0.0,,,False,False,LLM API error: 504 Deadline Exceeded
+https://github.com/gtarobotics/self-driving-car,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
 https://github.com/harness/drone-cli,cloned_repos/drone-cli/Dockerfile,"FROM amd64/alpine:3.19 as alpine
 RUN apk add -U --no-cache ca-certificates
 
 FROM amd64/alpine:3.19
-E...",No,Yes,0,0.0,2,20000.0,20000.0,
+E...",No,Yes,0,0.0,4,120000.0,120000.0,,,False,False,
 https://github.com/hatem-darweesh/assuremappingtools,cloned_repos/assuremappingtools/Dockerfile,"FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu18.04
 
 # Core System 
 RUN apt-get update && \
-  apt-get -...",No,Yes,0,0.0,2,30000.0,30000.0,
+  apt-get -...",No,Yes,0,0.0,4,140000.0,140000.0,,,False,False,
 https://github.com/huawei-noah/SMARTS,cloned_repos/SMARTS/utils/docker/Dockerfile.software_render,"# Steps to build and push minimal SMARTS docker image
 # ```bash
 # $ cd </path/to/SMARTS>
-# export VE...",Yes,Yes,3,220000.0,2,20000.0,240000.0,
-https://github.com/ipedrazas/drone-helm,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/lgsvl/simulator,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
-https://github.com/libornovax/master_thesis_code,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/mavlink/qgroundcontrol,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
-https://github.com/meltwater/drone-cache,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/microsoft/AirSim,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/microsoft/AirSim-NeurIPS2019-Drone-Racing,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/microsoft/devicescript,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/motional/nuplan-devkit,cloned_repos/nuplan-devkit/Dockerfile,"FROM ubuntu:20.04
+# export VE...",Yes,Yes,3,220000.0,2,40000.0,260000.0,,,False,False,
+https://github.com/ipedrazas/drone-helm,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/lgsvl/simulator,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
+https://github.com/libornovax/master_thesis_code,cloned_repos/master_thesis_code/caffe/docker/gpu/Dockerfile,"FROM nvidia/cuda:8.0-cudnn5-devel-ubuntu16.04
+LABEL maintainer caffe-maint@googlegroups.com
 
-RUN apt-get update \
-    && apt-get install -y curl gnupg2 software-properties-co...",Yes,Yes,5,320000.0,4,50000.0,370000.0,
-https://github.com/mspnp/aks-fabrikam-dronedelivery,,,No,No,0,0.0,0,0.0,0.0,Failed to clone repository
-https://github.com/nanopb/nanopb,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/naurril/SUSTechPOINTS,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/nerves-project/nerves,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+RUN apt...",Yes,Yes,2,10000.0,8,180000.0,190000.0,,,False,False,
+https://github.com/mavlink/qgroundcontrol,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
+https://github.com/meltwater/drone-cache,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/microsoft/AirSim,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/microsoft/AirSim-NeurIPS2019-Drone-Racing,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/microsoft/devicescript,cloned_repos/devicescript/.devcontainer/Dockerfile,"# see https://github.com/microsoft/vscode-dev-containers/tree/main/containers
+ARG VARIANT=""20""
+FROM ...",No,Yes,0,0.0,1,20000.0,20000.0,,,False,False,
+https://github.com/motional/nuplan-devkit,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/mspnp/aks-fabrikam-dronedelivery,,,No,No,0,0.0,0,0.0,0.0,,,False,False,Failed to clone repository
+https://github.com/nanopb/nanopb,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/naurril/SUSTechPOINTS,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/nerves-project/nerves,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
 https://github.com/nicholasaleks/Damn-Vulnerable-Drone,cloned_repos/Damn-Vulnerable-Drone/flight-controller/Dockerfile,"# FLIGHT CONTROL UNIT CONTAINER
 FROM ubuntu:22.04
 
 EXPOSE 5760 9003 
 
 ARG COPTER_TAG=Copter-4.4
-ARG ...",Yes,Yes,4,440000.0,4,150000.0,590000.0,
-https://github.com/noshluk2/ROS2-Self-Driving-Car-AI-using-OpenCV,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
-https://github.com/open-mmlab/OpenPCDet,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+ARG ...",Yes,Yes,4,440000.0,5,170000.0,610000.0,,,False,False,
+https://github.com/noshluk2/ROS2-Self-Driving-Car-AI-using-OpenCV,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
+https://github.com/open-mmlab/OpenPCDet,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/openthread/openthread,cloned_repos/openthread/tools/harness-simulation/posix/etc/Dockerfile,"#  Copyright (c) 2022, The OpenThread Authors.
 #  All rights reserved.
 #
-#  Redistribution and use i...",No,Yes,0,0.0,3,130000.0,130000.0,
+#  Redistribution and use i...",No,Yes,0,0.0,5,80000.0,80000.0,,,False,False,
 https://github.com/orig74/DroneSimLab,cloned_repos/DroneSimLab/dockers/ros_image_kinetic/Dockerfile,"#Base docker image
 FROM ubuntu:xenial-20170417.1
 RUN apt-get -y update
-RUN apt-get install -y softwa...",Yes,Yes,13,3290000.0,7,1170000.0,4460000.0,
-https://github.com/paparazzi/paparazzi,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/pylessard/python-can-isotp,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/pylessard/python-udsoncan,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+RUN apt-get install -y softwa...",Yes,Yes,13,3290000.0,13,250000.0,3540000.0,,,False,False,
+https://github.com/paparazzi/paparazzi,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/pylessard/python-can-isotp,cloned_repos/python-can-isotp/Dockerfile,"FROM ubuntu:20.04 as build-tests
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get ...",Yes,Yes,1,150000.0,3,10000.0,160000.0,,,False,False,
+https://github.com/pylessard/python-udsoncan,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
 https://github.com/ruhyadi/YOLO3D,cloned_repos/YOLO3D/Dockerfile,"# syntax=docker/dockerfile:1
 
 FROM ruhyadi/pytorch:v1.8.1-cu101
 
-RUN apt-get update && apt-get insta...",Yes,Yes,2,240000.0,1,10000.0,250000.0,
-https://github.com/rusefi/rusefi,cloned_repos/rusefi/.devcontainer/Dockerfile,"# syntax=docker/dockerfile:1
-# base image from ggrouv: https://github.com/ggurov/rusefibuildcontaine...",No,Yes,0,0.0,4,140000.0,140000.0,
-https://github.com/sigmaai/self-driving-golf-cart,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/storypku/CyberRT/tree/master,,,No,No,0,0.0,0,0.0,0.0,Failed to clone repository
+RUN apt-get update && apt-get insta...",Yes,Yes,2,240000.0,2,20000.0,260000.0,,,False,False,
+https://github.com/rusefi/rusefi,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/sigmaai/self-driving-golf-cart,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/storypku/CyberRT/tree/master,,,No,No,0,0.0,0,0.0,0.0,,,False,False,Failed to clone repository
 https://github.com/tier4/AutowareArchitectureProposal.proj,cloned_repos/AutowareArchitectureProposal.proj/docker/pre-built/Dockerfile,"FROM autoware:base
 SHELL [""/bin/bash"", ""-o"", ""pipefail"", ""-c""]
 
-## Copy autoware.proj.repos to the w...",No,Yes,0,0.0,1,20000.0,20000.0,
-https://github.com/tier4/CalibrationTools,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/truevisionai/designer,cloned_repos/designer/Dockerfile,"FROM electronuserland/builder:wine
+## Copy autoware.proj.repos to the w...",No,Yes,0,0.0,1,0.0,0.0,,,False,False,
+https://github.com/tier4/CalibrationTools,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/truevisionai/designer,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/trust-ai/SafeBench,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/tusen-ai/SST,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/u-root/u-root,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/uTensor/uTensor,cloned_repos/uTensor/.circleci/Dockerfile,"FROM ubuntu
+MAINTAINER Michael Bartling ""michael.bartling15@gmail.com""
 
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm install
-
-COPY . /ap...",No,No,0,0.0,0,0.0,0.0,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+RUN apt-get update
+RUN apt-g...",Yes,Yes,3,490000.0,4,90000.0,580000.0,,,False,False,
+https://github.com/ucd-dare/CarDreamer,,,No,No,0,0.0,0,0.0,0.0,,,False,False,'>' not supported between instances of 'NoneType' and 'int'
+https://github.com/ucla-mobility/OpenCDA,cloned_repos/OpenCDA/Dockerfile,"# MIT License
+#
+# Copyright (C) 2023 Goodarz Mehr
+# Copyright (C) 2023 Virginia Tech ASIM Lab
+#
+# Pe...",Yes,No,8,310000.0,0,0.0,0.0,,,False,False,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
 * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
-Please retry in 14.596449548s. [links {
+Please retry in 49.917957088s. [links {
   description: ""Learn more about Gemini API quotas""
   url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
 }
@@ -247,34 +264,113 @@ Please retry in 14.596449548s. [links {
   quota_value: 15
 }
 , retry_delay {
-  seconds: 14
+  seconds: 49
 }
 ]"
-https://github.com/trust-ai/SafeBench,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/tusen-ai/SST,cloned_repos/SST/docker/Dockerfile,"ARG PYTORCH=""1.6.0""
-ARG CUDA=""10.1""
-ARG CUDNN=""7""
-
-FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn...",Yes,Yes,5,370000.0,3,40000.0,410000.0,
-https://github.com/u-root/u-root,cloned_repos/u-root/tools/golang_patched_dce/Dockerfile,"FROM golang:1.13.5-alpine
-
-ADD ad1d54f.diff /
-
-RUN cd $(go env GOROOT) && patch -p 1 < /ad1d54f.diff...",No,Yes,0,0.0,1,10000.0,10000.0,
-https://github.com/uTensor/uTensor,cloned_repos/uTensor/.circleci/Dockerfile,"FROM ubuntu
-MAINTAINER Michael Bartling ""michael.bartling15@gmail.com""
-
-RUN apt-get update
-RUN apt-g...",Yes,Yes,3,490000.0,5,120000.0,610000.0,
-https://github.com/ucd-dare/CarDreamer,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/ucla-mobility/OpenCDA,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
-https://github.com/vectorgrp/sil-kit,,,No,No,0,0.0,0,0.0,0.0,No Dockerfiles found
+https://github.com/vectorgrp/sil-kit,,,No,No,0,0.0,0,0.0,0.0,,,False,False,No Dockerfiles found
 https://github.com/verivital/nnv,cloned_repos/nnv/Dockerfile,"# Building from Dockerfile provided by Mathworks
-# https://github.com/mathworks-ref-arch/matlab-dock...",No,Yes,0,0.0,3,30000.0,30000.0,
-https://github.com/w111liang222/lidar-slam-detection,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+# https://github.com/mathworks-ref-arch/matlab-dock...",No,No,0,0.0,0,0.0,0.0,,,False,False,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 49.331446261s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 49
+}
+]"
+https://github.com/w111liang222/lidar-slam-detection,cloned_repos/lidar-slam-detection/tools/build/resources/ZeroCM/Dockerfile,"ARG IMAGE_VERSION=16.04
+FROM ubuntu:$IMAGE_VERSION
+USER root
+
+ENV ZCM_HOME /zcm
+WORKDIR $ZCM_HOME
+
+R...",Yes,No,2,180000.0,0,0.0,0.0,,,False,False,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 48.871891521s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 48
+}
+]"
 https://github.com/wangguojun2018/CenterNet3d,cloned_repos/CenterNet3d/docker/Dockerfile,"ARG PYTORCH=""1.6.0""
 ARG CUDA=""10.1""
 ARG CUDNN=""7""
+FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn$...",Yes,No,6,400000.0,0,0.0,0.0,,,False,False,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 48.732768704s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 48
+}
+]"
+https://github.com/waymo-research/waymo-open-dataset,cloned_repos/waymo-open-dataset/src/waymo_open_dataset/latency/examples/2d_challenge/tensorflow/Dockerfile,"FROM tensorflow/tensorflow:2.4.1-gpu
 
-FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn...",Yes,Yes,4,340000.0,3,70000.0,410000.0,
-https://github.com/waymo-research/waymo-open-dataset,,,No,No,0,0.0,0,0.0,0.0,'>' not supported between instances of 'NoneType' and 'int'
+# Install apt dependencies.
+RUN apt-get update && apt-get inst...",Yes,No,3,190000.0,0,0.0,0.0,,,False,False,"LLM API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.5-flash-lite
+Please retry in 48.501889826s. [links {
+  description: ""Learn more about Gemini API quotas""
+  url: ""https://ai.google.dev/gemini-api/docs/rate-limits""
+}
+, violations {
+  quota_metric: ""generativelanguage.googleapis.com/generate_content_free_tier_requests""
+  quota_id: ""GenerateRequestsPerMinutePerProjectPerModel-FreeTier""
+  quota_dimensions {
+    key: ""model""
+    value: ""gemini-2.5-flash-lite""
+  }
+  quota_dimensions {
+    key: ""location""
+    value: ""global""
+  }
+  quota_value: 15
+}
+, retry_delay {
+  seconds: 48
+}
+]"

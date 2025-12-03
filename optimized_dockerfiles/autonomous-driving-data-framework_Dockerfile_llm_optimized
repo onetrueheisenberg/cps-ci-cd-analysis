@@ -11,37 +11,23 @@ ENV DCV_SM_NAME=$DCV_SM_NAME
 # Prepare the container to run systemd inside
 ENV container docker
 
-# Enable Universe repository (to install freeglut-3) and prepare for subsequent apt commands
-RUN apt-get update && apt-get install --no-install-recommends software-properties-common apt-transport-https ca-certificates xz-utils locales curl iputils-ping firewalld -y && \
+# Enable Universe repository (to install freeglut-3)
+RUN apt-get update && apt-get install --no-install-recommends software-properties-common -y && \
     add-apt-repository universe && \
     apt-get upgrade -y && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install tools
-RUN apt-get install --no-install-recommends -y \
-	tar vim jq wget kmod sudo pciutils locales curl iputils-ping firewalld && \
-	apt-get update && \
-	rm -rf /var/lib/apt/lists/*
-
-# Install X Server, Gnome and GL libs/dependencies
-RUN apt-get install --no-install-recommends -y \
+    apt-get install --no-install-recommends -y \
+	tar vim jq wget kmod software-properties-common apt-transport-https \
+	sudo pciutils ca-certificates xz-utils locales curl iputils-ping firewalld \
 	mesa-utils libxvmc-dev libxatracker-dev \
 	xserver-xorg-core xserver-xorg xserver-xorg-dev xorg x11-utils xauth xinit  \
 	openbox  xfonts-base xterm freeglut3 freeglut3-dev ubuntu-desktop-minimal gnome-shell gdm3 \
-	libglfw3-dev libgles2-mesa-dev libglew-dev glew-utils && \
-	apt-get update && \
-	rm -rf /var/lib/apt/lists/*
-
-# Install Metacity window manager
-RUN apt-get install --no-install-recommends -y \
-	metacity xdotool wmctrl && \
-	apt-get update && \
-	rm -rf /var/lib/apt/lists/*
+	libglfw3-dev libgles2-mesa-dev libglew-dev glew-utils \
+	metacity xdotool wmctrl \
+	python3-pip unzip && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
-RUN apt-get install --no-install-recommends -y python3-pip unzip && \
-    pip3 install kubernetes boto3 && \
-    rm -rf /var/lib/apt/lists/*
+RUN pip3 install kubernetes boto3
 
 # Install Nvidia Driver, configure Xorg, install NICE DCV server
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -61,7 +47,9 @@ RUN bash /tmp/NVIDIA-installer.run --accept-license \
  && nvidia-xconfig --preserve-busid --enable-all-gpus -connected-monitor=DFP-0,DFP-1,DFP-2,DFP-3
 
 # Install NICE DCV
-RUN mkdir -p /tmp/dcv-inst && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	wget gnupg && \
+	mkdir -p /tmp/dcv-inst && \
 	cd /tmp/dcv-inst && \
 	wget https://d1uj6qtbmh3dt5.cloudfront.net/NICE-GPG-KEY && \
 	gpg --import NICE-GPG-KEY && \
@@ -72,26 +60,30 @@ RUN mkdir -p /tmp/dcv-inst && \
 		./nice-dcv-web-viewer_2022.2.13907-1_amd64.ubuntu2004.deb \
 		./nice-xdcv_2022.2.481-1_amd64.ubuntu2004.deb \
 		./nice-dcv-gl_2022.2.983-1_amd64.ubuntu2004.deb  \
-		./nice-dcv-simple-external-authenticator_2022.2.198-1_amd64.ubuntu2004.deb -y && \
+		./nice-dcv-simple-external-authenticator_2022.2.198-1_amd64.ubuntu2004.deb && \
 	usermod -aG video dcv && \
-	rm -rf /tmp/dcv-inst
+	rm -rf /tmp/dcv-inst && \
+	rm -rf /var/lib/apt/lists/*
 
 # Create a location for session init and autorun script logs
 RUN mkdir -p /var/log/init_session && chmod 777 /var/log/init_session
-
 # Install AWS CLI
-RUN mkdir -p /tmp/awscli-install \
+RUN apt-get update && apt-get install -y --no-install-recommends unzip && \
+    mkdir -p /tmp/awscli-install \
     && cd /tmp/awscli-install \
     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \
     && ./aws/install \
-    && rm -rf /tmp/awscli-install
+    && rm -rf /tmp/awscli-install \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Foxbox
-RUN wget https://github.com/bmw-software-engineering/foxbox/releases/download/1.0.0/foxbox-1.0.0-linux-amd64.deb \
+RUN apt-get update && apt-get install -y --no-install-recommends wget && \
+    wget https://github.com/bmw-software-engineering/foxbox/releases/download/1.0.0/foxbox-1.0.0-linux-amd64.deb \
     && apt-get install --no-install-recommends -y ./foxbox-1.0.0-linux-amd64.deb \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f ./foxbox-1.0.0-linux-amd64.deb
+
 
 # Configure XFCE to prevent automatic logout
 RUN mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml

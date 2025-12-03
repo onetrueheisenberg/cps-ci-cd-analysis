@@ -2,10 +2,7 @@ FROM nvidia/cudagl:11.4.2-devel-ubuntu20.04
 MAINTAINER Sukrit Kalra (sukrit.kalra@berkeley.edu)
 
 # Set up a erdos user first.
-RUN apt-get -y update && apt-get -y install sudo locales && sudo locale-gen en_US.UTF-8 && \
-    apt-get install --no-install-recommends -y tzdata && \
-    apt-get install -y apt-utils git curl clang python-is-python3 python3-pip libcudnn8 cuda-toolkit-11-4 ssh libqt5core5a libeigen3-dev cmake qtbase5-dev libpng16-16 libtiff5 python3-tk python3-pygame libgeos-dev && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get -y update && apt-get -y install sudo locales && sudo locale-gen en_US.UTF-8
 ENV uid 1000
 ENV gid 1000
 
@@ -24,27 +21,28 @@ ENV SHELL /bin/bash
 WORKDIR /home/erdos
 SHELL ["/bin/bash", "--login", "-c"]
 
-RUN mkdir -p /home/erdos/workspace
-RUN cd /home/erdos/workspace
+RUN mkdir -p /home/erdos/workspace && cd /home/erdos/workspace
 
+RUN apt-get -y --fix-missing update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y tzdata locales && locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US
 ENV LC_ALL en_US.UTF-8
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN python3 -m pip install --no-cache-dir --upgrade pip
-RUN python3 -m pip install --no-cache-dir setuptools setuptools-rust numpy==1.19.5
+# Get the ERDOS package dependencies.
+RUN apt-get -y install apt-utils git curl clang python-is-python3 python3-pip && \
+    python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir setuptools setuptools-rust numpy==1.19.5
 
 # Setup Rust and install ERDOS.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/home/erdos/.cargo/bin:${PATH}"
 RUN echo "export PATH=/home/erdos/.cargo/bin:${PATH}" >> ~/.bashrc
-RUN rustup default nightly
-RUN mkdir -p /home/erdos/workspace
-RUN cd /home/erdos/workspace && git clone https://github.com/erdos-project/erdos.git && cd erdos && python3 python/setup.py install
+RUN rustup default stable
+RUN mkdir -p /home/erdos/workspace && cd /home/erdos/workspace && git clone https://github.com/erdos-project/erdos.git && cd erdos && python3 python/setup.py install
 
 # Set up Pylot.
+RUN apt-get install --no-install-recommends -y libcudnn8 cuda-toolkit-11-4 ssh libqt5core5a libeigen3-dev cmake qtbase5-dev libpng16-16 libtiff5 python3-tk python3-pygame libgeos-dev
+
 # Get the Pylot directory.
 RUN cd /home/erdos/workspace && git clone https://github.com/erdos-project/pylot.git
 WORKDIR /home/erdos/workspace/pylot/
@@ -72,5 +70,4 @@ RUN echo "export PATH=$HOME/.local/bin:${PATH}" >> ~/.bashrc
 
 # Set up ssh access to the container.
 RUN cd ~/ && ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y 2>&1 >/dev/null
-RUN sudo sed -i 's/#X11UseLocalhost yes/X11UseLocalhost no/g' /etc/ssh/sshd_config
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN sed -i 's/#X11UseLocalhost yes/X11UseLocalhost no/g' /etc/ssh/sshd_config

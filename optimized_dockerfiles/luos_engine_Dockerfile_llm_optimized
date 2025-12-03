@@ -9,8 +9,8 @@ WORKDIR /home/app
 
 COPY . .
 
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-  pip install --no-cache-dir platformio
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel platformio && \
+  rm -rf /root/.cache/pip
 
 RUN platformio run \
   --environment native \

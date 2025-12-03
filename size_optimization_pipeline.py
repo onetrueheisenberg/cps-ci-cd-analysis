@@ -49,9 +49,11 @@ class SizeOptimizationResult:
     llm_estimated_savings_kb: float = 0.0
     total_estimated_savings_kb: float = 0.0
     original_image_size: Optional[str] = None
-    optimized_image_size: Optional[str] = None
+    static_image_size: Optional[str] = None
+    llm_image_size: Optional[str] = None
     original_build_success: bool = False
-    optimized_build_success: bool = False
+    static_build_success: bool = False
+    llm_build_success: bool = False
     error: Optional[str] = None
 
 
@@ -228,6 +230,46 @@ def clone_repo(url: str, base_dir: str) -> str:
     return dest
 
 
+def select_best_dockerfile(dockerfiles: List[str]) -> Optional[str]:
+    """Select the most likely to succeed dockerfile from a list.
+    Prefers 'Dockerfile' over others, then first one found."""
+    if not dockerfiles:
+        return None
+    
+    # Prefer exact "Dockerfile" match
+    for df in dockerfiles:
+        if os.path.basename(df).lower() == "dockerfile":
+            return df
+    
+    # Otherwise return the first one
+    return dockerfiles[0]
+
+
+def get_image_size(image_name: str) -> Optional[str]:
+    """Get the size of a Docker image using docker inspect."""
+    try:
+        result = subprocess.run(
+            ["docker", "inspect", "--format={{.Size}}", image_name],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            size_bytes = float(result.stdout.strip())
+            # Convert to human-readable format
+            for unit in ['B', 'KB', 'MB', 'GB']:
+                if size_bytes < 1024.0:
+                    if unit == 'B':
+                        return f"{int(size_bytes)}{unit}"
+                    return f"{size_bytes:.2f}{unit}"
+                size_bytes /= 1024.0
+            return f"{size_bytes:.2f}TB"
+    except Exception:
+        pass
+    return None
+
+
 def process_repository(
     repo_url: str,
     repos_dir: str,
@@ -235,8 +277,9 @@ def process_repository(
     api_key: Optional[str],
     model: Optional[str],
     build_images: bool = False,
-) -> List[SizeOptimizationResult]:
-    """Process a single repository through the size optimization pipeline."""
+) -> Optional[SizeOptimizationResult]:
+    """Process a single repository through the size optimization pipeline.
+    Selects one dockerfile, builds original, static, and LLM versions, and compares sizes."""
     print(f"\n{'='*70}")
     print(f"Processing: {repo_url}")
     print(f"{'='*70}")
@@ -244,148 +287,175 @@ def process_repository(
     repo_path = clone_repo(repo_url, repos_dir)
     
     if not os.path.exists(repo_path):
-        return [SizeOptimizationResult(
+        return SizeOptimizationResult(
             repo_url=repo_url,
             dockerfile_path="",
             original_dockerfile="",
             error="Failed to clone repository"
-        )]
+        )
     
     dockerfiles = find_dockerfiles(repo_path)
     
     if not dockerfiles:
         print("No Dockerfiles found")
-        return [SizeOptimizationResult(
+        return SizeOptimizationResult(
             repo_url=repo_url,
             dockerfile_path="",
             original_dockerfile="",
             error="No Dockerfiles found"
-        )]
+        )
     
-    results = []
+    # Select one dockerfile (most likely to succeed)
+    dockerfile_path = select_best_dockerfile(dockerfiles)
+    if not dockerfile_path:
+        return SizeOptimizationResult(
+            repo_url=repo_url,
+            dockerfile_path="",
+            original_dockerfile="",
+            error="Failed to select dockerfile"
+        )
     
-    tester: Optional[DockerfileTester] = None
+    print(f"\nSelected Dockerfile: {dockerfile_path}")
+    
+    try:
+        with open(dockerfile_path, 'r', encoding='utf-8') as f:
+            original_content = f.read()
+    except Exception as e:
+        return SizeOptimizationResult(
+            repo_url=repo_url,
+            dockerfile_path=dockerfile_path,
+            original_dockerfile="",
+            error=f"Failed to read Dockerfile: {e}"
+        )
+    
+    result = SizeOptimizationResult(
+        repo_url=repo_url,
+        dockerfile_path=dockerfile_path,
+        original_dockerfile=original_content
+    )
+    
+    repo_name = repo_url.rstrip("/").split("/")[-1]
+    dockerfile_name = Path(dockerfile_path).name
+    base_name = f"{repo_name}_{dockerfile_name}"
+    
+    # Save original
+    original_save_path = os.path.join(output_dir, f"{base_name}_original")
+    with open(original_save_path, 'w', encoding='utf-8') as f:
+        f.write(original_content)
+    print(f"  Saved original → {original_save_path}")
+    
+    # Step 1: Apply static optimizations
+    print("\n  Step 1: Static Size Optimization")
+    static_optimized, changes = apply_static_size_optimizations(original_content)
+    
+    if static_optimized != original_content:
+        result.static_optimized_dockerfile = static_optimized
+        result.static_size_issues_found = len(changes)
+        
+        instructions = parse_dockerfile(original_content)
+        all_recs = analyse_instructions(instructions)
+        size_recs = filter_size_recommendations(all_recs)
+        result.static_estimated_savings_kb = estimate_size_savings(size_recs)
+        
+        static_save_path = os.path.join(output_dir, f"{base_name}_static_optimized")
+        with open(static_save_path, 'w', encoding='utf-8') as f:
+            f.write(static_optimized)
+        print(f"  Applied {len(changes)} static optimizations")
+        print(f"  Saved static optimized → {static_save_path}")
+        
+        base_for_llm = static_optimized
+    else:
+        print("  No static optimizations applied")
+        base_for_llm = original_content
+        static_save_path = None
+    
+    # Step 2: Apply LLM optimizations
+    print("\n  Step 2: LLM Size Optimization")
+    llm_optimized, llm_result = apply_llm_size_optimization(base_for_llm, api_key, model)
+    
+    if llm_optimized and llm_optimized != base_for_llm:
+        result.llm_optimized_dockerfile = llm_optimized
+        
+        llm_data = llm_result.get("llm_data", {})
+        size_issues = llm_result.get("size_issues", [])
+        result.llm_size_issues_found = len(size_issues)
+        result.llm_estimated_savings_kb = estimate_size_savings(size_issues, llm_data)
+        result.total_estimated_savings_kb = result.static_estimated_savings_kb + result.llm_estimated_savings_kb
+        
+        llm_save_path = os.path.join(output_dir, f"{base_name}_llm_optimized")
+        with open(llm_save_path, 'w', encoding='utf-8') as f:
+            f.write(llm_optimized)
+        print(f"  Applied LLM optimizations")
+        print(f"  Saved LLM optimized → {llm_save_path}")
+    elif llm_result.get("no_changes"):
+        print("  LLM found no additional size optimizations needed")
+        result.total_estimated_savings_kb = result.static_estimated_savings_kb
+        llm_save_path = None
+    else:
+        error_msg = llm_result.get("error", "Unknown error")
+        print(f"  LLM optimization failed: {error_msg}")
+        result.error = error_msg if not result.error else f"{result.error}; LLM: {error_msg}"
+        llm_save_path = None
+
+    # Build all three versions and compare sizes
     if build_images:
         tester = DockerfileTester()
         if not tester.docker_available:
             print("  Docker CLI not available – skipping image builds")
-            tester = None
-
-    for dockerfile_path in dockerfiles[:1]:
-        print(f"\nProcessing Dockerfile: {dockerfile_path}")
-        
-        try:
-            with open(dockerfile_path, 'r', encoding='utf-8') as f:
-                original_content = f.read()
-        except Exception as e:
-            results.append(SizeOptimizationResult(
-                repo_url=repo_url,
-                dockerfile_path=dockerfile_path,
-                original_dockerfile="",
-                error=f"Failed to read Dockerfile: {e}"
-            ))
-            continue
-        
-        result = SizeOptimizationResult(
-            repo_url=repo_url,
-            dockerfile_path=dockerfile_path,
-            original_dockerfile=original_content
-        )
-        
-        repo_name = repo_url.rstrip("/").split("/")[-1]
-        dockerfile_name = Path(dockerfile_path).name
-        base_name = f"{repo_name}_{dockerfile_name}"
-        
-        original_save_path = os.path.join(output_dir, f"{base_name}_original")
-        with open(original_save_path, 'w', encoding='utf-8') as f:
-            f.write(original_content)
-        print(f"  Saved original → {original_save_path}")
-        
-        print("\n  Step 1: Static Size Optimization")
-        static_optimized, changes = apply_static_size_optimizations(original_content)
-        
-        if static_optimized != original_content:
-            result.static_optimized_dockerfile = static_optimized
-            result.static_size_issues_found = len(changes)
-            
-            instructions = parse_dockerfile(original_content)
-            all_recs = analyse_instructions(instructions)
-            size_recs = filter_size_recommendations(all_recs)
-            result.static_estimated_savings_kb = estimate_size_savings(size_recs)
-            
-            static_save_path = os.path.join(output_dir, f"{base_name}_static_optimized")
-            with open(static_save_path, 'w', encoding='utf-8') as f:
-                f.write(static_optimized)
-            print(f"  Applied {len(changes)} static optimizations")
-            print(f"  Estimated savings: {result.static_estimated_savings_kb:.1f} KB")
-            print(f"  Saved static optimized → {static_save_path}")
-            
-            base_for_llm = static_optimized
         else:
-            print("  No static optimizations applied")
-            base_for_llm = original_content
-        
-        print("\n  Step 2: LLM Size Optimization")
-        llm_optimized, llm_result = apply_llm_size_optimization(base_for_llm, api_key, model)
-        
-        if llm_optimized and llm_optimized != base_for_llm:
-            result.llm_optimized_dockerfile = llm_optimized
+            image_base = repo_name.replace("/", "_").replace("-", "_").lower()
             
-            llm_data = llm_result.get("llm_data", {})
-            size_issues = llm_result.get("size_issues", [])
-            result.llm_size_issues_found = len(size_issues)
-            result.llm_estimated_savings_kb = estimate_size_savings(size_issues, llm_data)
-            result.total_estimated_savings_kb = result.static_estimated_savings_kb + result.llm_estimated_savings_kb
-            
-            llm_save_path = os.path.join(output_dir, f"{base_name}_llm_optimized")
-            with open(llm_save_path, 'w', encoding='utf-8') as f:
-                f.write(llm_optimized)
-            print(f"  Applied LLM optimizations")
-            print(f"  Estimated LLM savings: {result.llm_estimated_savings_kb:.1f} KB")
-            print(f"  Total estimated savings: {result.total_estimated_savings_kb:.1f} KB")
-            print(f"  Saved LLM optimized → {llm_save_path}")
-        elif llm_result.get("no_changes"):
-            print("  LLM found no additional size optimizations needed")
-            result.total_estimated_savings_kb = result.static_estimated_savings_kb
-        else:
-            error_msg = llm_result.get("error", "Unknown error")
-            print(f"  LLM optimization failed: {error_msg}")
-            result.error = error_msg
-
-        # Optional: build original and optimized images and compare sizes
-        if tester is not None:
+            # Build original
+            original_tag = f"{image_base}_original"
+            print(f"\n  Building original image: {original_tag}")
             try:
-                image_base = repo_name.replace("/", "_")
-                original_tag = f"{image_base}:original"
-
-                print("\n  Building original image for size comparison")
-                build_res = tester._build_image(dockerfile_path, repo_path, original_tag)
+                build_res = tester._build_image(original_save_path, repo_path, original_tag)
                 result.original_build_success = build_res.get("success", False)
-                result.original_image_size = build_res.get("final_size")
-
-                optimized_path: Optional[str] = None
-                if result.llm_optimized_dockerfile:
-                    optimized_path = os.path.join(output_dir, f"{base_name}_llm_optimized")
-                elif result.static_optimized_dockerfile:
-                    optimized_path = os.path.join(output_dir, f"{base_name}_static_optimized")
-
-                if optimized_path and os.path.exists(optimized_path):
-                    optimized_tag = f"{image_base}:optimized"
-                    print("\n  Building optimized image for size comparison")
-                    opt_build_res = tester._build_image(optimized_path, repo_path, optimized_tag)
-                    result.optimized_build_success = opt_build_res.get("success", False)
-                    result.optimized_image_size = opt_build_res.get("final_size")
-
-                if result.original_image_size or result.optimized_image_size:
-                    print("\n  Image size comparison:")
-                    print(f"    Original image size : {result.original_image_size or 'N/A'}")
-                    print(f"    Optimized image size: {result.optimized_image_size or 'N/A'}")
+                if result.original_build_success:
+                    result.original_image_size = build_res.get("final_size") or get_image_size(original_tag)
+                    print(f"    Build successful. Size: {result.original_image_size or 'N/A'}")
+                else:
+                    print(f"    Build failed: {build_res.get('errors', 'Unknown error')[:200]}")
             except Exception as e:
-                print(f"  Skipping image build due to error: {e}")
-        
-        results.append(result)
+                print(f"    Build error: {str(e)[:200]}")
+            
+            # Build static optimized
+            if static_save_path and os.path.exists(static_save_path):
+                static_tag = f"{image_base}_static"
+                print(f"\n  Building static optimized image: {static_tag}")
+                try:
+                    build_res = tester._build_image(static_save_path, repo_path, static_tag)
+                    result.static_build_success = build_res.get("success", False)
+                    if result.static_build_success:
+                        result.static_image_size = build_res.get("final_size") or get_image_size(static_tag)
+                        print(f"    Build successful. Size: {result.static_image_size or 'N/A'}")
+                    else:
+                        print(f"    Build failed: {build_res.get('errors', 'Unknown error')[:200]}")
+                except Exception as e:
+                    print(f"    Build error: {str(e)[:200]}")
+            
+            # Build LLM optimized
+            if llm_save_path and os.path.exists(llm_save_path):
+                llm_tag = f"{image_base}_llm"
+                print(f"\n  Building LLM optimized image: {llm_tag}")
+                try:
+                    build_res = tester._build_image(llm_save_path, repo_path, llm_tag)
+                    result.llm_build_success = build_res.get("success", False)
+                    if result.llm_build_success:
+                        result.llm_image_size = build_res.get("final_size") or get_image_size(llm_tag)
+                        print(f"    Build successful. Size: {result.llm_image_size or 'N/A'}")
+                    else:
+                        print(f"    Build failed: {build_res.get('errors', 'Unknown error')[:200]}")
+                except Exception as e:
+                    print(f"    Build error: {str(e)[:200]}")
+            
+            # Print comparison
+            print("\n  Image size comparison:")
+            print(f"    Original: {result.original_image_size or 'BUILD_FAILED'}")
+            print(f"    Static:   {result.static_image_size or 'BUILD_FAILED'}")
+            print(f"    LLM:      {result.llm_image_size or 'BUILD_FAILED'}")
     
-    return results
+    return result
 
 
 def main():
@@ -405,7 +475,14 @@ def main():
     parser.add_argument(
         "--build-images",
         action="store_true",
-        help="Build Docker images for original and optimized Dockerfiles and compare sizes",
+        default=True,
+        help="Build Docker images for original and optimized Dockerfiles and compare sizes (default: True)",
+    )
+    parser.add_argument(
+        "--no-build",
+        dest="build_images",
+        action="store_false",
+        help="Skip building Docker images",
     )
     args = parser.parse_args()
     
@@ -439,7 +516,7 @@ def main():
     for i, repo_url in enumerate(repo_urls, 1):
         print(f"\n[{i}/{len(repo_urls)}] {repo_url}")
         try:
-            results = process_repository(
+            result = process_repository(
                 repo_url,
                 args.repos_dir,
                 args.output_dir,
@@ -447,7 +524,8 @@ def main():
                 args.model,
                 build_images=args.build_images,
             )
-            all_results.extend(results)
+            if result:
+                all_results.append(result)
         except Exception as e:
             print(f"ERROR processing {repo_url}: {e}")
             all_results.append(SizeOptimizationResult(
@@ -457,17 +535,50 @@ def main():
                 error=str(e)
             ))
     
+    # Write results to CSV with simplified format
     with open(args.results_file, 'w', newline='', encoding='utf-8') as f:
-        if all_results:
-            fieldnames = list(asdict(all_results[0]).keys())
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            for result in all_results:
-                row = asdict(result)
-                row['original_dockerfile'] = row['original_dockerfile'][:100] + "..." if len(row.get('original_dockerfile', '')) > 100 else row.get('original_dockerfile', '')
-                row['static_optimized_dockerfile'] = "Yes" if row.get('static_optimized_dockerfile') else "No"
-                row['llm_optimized_dockerfile'] = "Yes" if row.get('llm_optimized_dockerfile') else "No"
-                writer.writerow(row)
+        fieldnames = ['Repository', 'Original Size', 'Static Size', 'LLM Size', 'Error']
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for result in all_results:
+            # Determine original size
+            original_size = result.original_image_size
+            if not original_size:
+                if args.build_images and not result.original_build_success:
+                    original_size = 'BUILD_FAILED'
+                else:
+                    original_size = 'N/A'
+            
+            # Determine static size
+            if result.static_optimized_dockerfile:
+                static_size = result.static_image_size
+                if not static_size:
+                    if args.build_images and not result.static_build_success:
+                        static_size = 'BUILD_FAILED'
+                    else:
+                        static_size = 'N/A'
+            else:
+                static_size = 'NO_OPTIMIZATIONS'
+            
+            # Determine LLM size
+            if result.llm_optimized_dockerfile:
+                llm_size = result.llm_image_size
+                if not llm_size:
+                    if args.build_images and not result.llm_build_success:
+                        llm_size = 'BUILD_FAILED'
+                    else:
+                        llm_size = 'N/A'
+            else:
+                llm_size = 'NO_OPTIMIZATIONS'
+            
+            row = {
+                'Repository': result.repo_url,
+                'Original Size': original_size,
+                'Static Size': static_size,
+                'LLM Size': llm_size,
+                'Error': result.error or ''
+            }
+            writer.writerow(row)
     
     print(f"\n{'='*70}")
     print("SUMMARY")

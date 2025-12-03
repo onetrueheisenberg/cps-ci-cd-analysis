@@ -5,7 +5,7 @@ FROM amd64/alpine:3.19
 ENV GODEBUG netdns=go
 
 # Add security updates
-RUN apk add -U --no-cache ca-certificates zlib openssl busybox && \
+RUN apk add -U --no-cache ca-certificates zlib openssl && \
     # Create a non-root user
     addgroup -S drone && \
     adduser -S -G drone drone
